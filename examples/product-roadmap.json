@@ -1,0 +1,153 @@
+{
+  "pneuma": "1.0",
+  "metadata": {
+    "title": "Product Roadmap — Q1/Q2 2026",
+    "description": "Cross-functional product roadmap for the Gaia platform launch. Covers discovery, engineering, and marketing workstreams.",
+    "created": "2026-01-06",
+    "authors": ["Josh Davis"],
+    "tags": ["roadmap", "gaia", "2026", "q1", "q2"]
+  },
+  "layers": [
+    {
+      "id": "discovery",
+      "label": "Discovery",
+      "color": "#7c3aed",
+      "visibility": ["author", "team", "present"]
+    },
+    {
+      "id": "engineering",
+      "label": "Engineering",
+      "color": "#0ea5e9",
+      "visibility": ["author", "team", "present"]
+    },
+    {
+      "id": "marketing",
+      "label": "Marketing",
+      "color": "#f97316",
+      "visibility": ["author", "team", "present"]
+    }
+  ],
+  "events": [
+    {
+      "id": "disco-kickoff",
+      "label": "Discovery Kickoff",
+      "type": "milestone",
+      "layerId": "discovery",
+      "startDate": "2026-01-06",
+      "impact": 8,
+      "notes": "First cross-functional alignment meeting. Objectives, personas, and success metrics defined."
+    },
+    {
+      "id": "disco-research",
+      "label": "User Research Sprint",
+      "type": "span",
+      "layerId": "discovery",
+      "startDate": "2026-01-07",
+      "endDate": "2026-01-30",
+      "impact": 9,
+      "notes": "20 customer interviews. Jobs-to-be-done mapping. Competitive analysis."
+    },
+    {
+      "id": "disco-spec-deadline",
+      "label": "PRD Sign-off",
+      "type": "deadline",
+      "layerId": "discovery",
+      "startDate": "2026-02-06",
+      "impact": 10,
+      "notes": "Product requirements document approved by all stakeholders. Engineering can begin sprint planning."
+    },
+    {
+      "id": "eng-scaffold",
+      "label": "Repo Scaffold & CI",
+      "type": "task",
+      "layerId": "engineering",
+      "startDate": "2026-01-12",
+      "endDate": "2026-01-23",
+      "impact": 6,
+      "notes": "Gaia monorepo setup. Next.js 15, Clerk, Supabase schema, CI pipeline."
+    },
+    {
+      "id": "eng-alpha",
+      "label": "Alpha Build",
+      "type": "span",
+      "layerId": "engineering",
+      "startDate": "2026-02-09",
+      "endDate": "2026-03-27",
+      "impact": 10,
+      "notes": "Core platform: spaces, diagram creation, Stratum + Kronum renderers, share links."
+    },
+    {
+      "id": "eng-beta-launch",
+      "label": "Closed Beta Launch",
+      "type": "milestone",
+      "layerId": "engineering",
+      "startDate": "2026-04-01",
+      "impact": 10,
+      "notes": "Beta invite-only access. 50 design partner seats."
+    },
+    {
+      "id": "mkt-waitlist",
+      "label": "Waitlist Campaign",
+      "type": "span",
+      "layerId": "marketing",
+      "startDate": "2026-02-16",
+      "endDate": "2026-03-27",
+      "impact": 7,
+      "notes": "Landing page live. Social content calendar. Target: 1,000 waitlist signups before beta."
+    },
+    {
+      "id": "mkt-launch-event",
+      "label": "Public Launch Announcement",
+      "type": "deadline",
+      "layerId": "marketing",
+      "startDate": "2026-06-01",
+      "impact": 9,
+      "notes": "Blog post, Product Hunt launch, press outreach. Coordinated with engineering GA readiness."
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel-prd-to-alpha",
+      "type": "triggers",
+      "source": "disco-spec-deadline",
+      "target": "eng-alpha",
+      "label": "PRD triggers alpha sprint"
+    },
+    {
+      "id": "rel-alpha-to-beta",
+      "type": "depends_on",
+      "source": "eng-beta-launch",
+      "target": "eng-alpha",
+      "label": "Beta depends on alpha completion"
+    },
+    {
+      "id": "rel-beta-to-mkt",
+      "type": "informs",
+      "source": "eng-beta-launch",
+      "target": "mkt-launch-event",
+      "label": "Beta learnings inform launch messaging"
+    }
+  ],
+  "views": [
+    {
+      "id": "view-team",
+      "label": "Team View",
+      "mode": "team",
+      "layers": ["discovery", "engineering", "marketing"],
+      "dateRange": {
+        "start": "2026-01-01",
+        "end": "2026-06-30"
+      }
+    },
+    {
+      "id": "view-present",
+      "label": "Stakeholder View",
+      "mode": "present",
+      "layers": ["engineering", "marketing"],
+      "dateRange": {
+        "start": "2026-02-01",
+        "end": "2026-06-30"
+      }
+    }
+  ]
+}

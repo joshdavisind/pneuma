@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "generated": "2026-03-03",
+  "types": {
+    "milestone": { "category": "Event", "hasDuration": false },
+    "deadline": { "category": "Event", "hasDuration": false },
+    "span": { "category": "Event", "hasDuration": true },
+    "task": { "category": "Event", "hasDuration": true }
+  },
+  "relationshipTypes": {
+    "depends_on": { "category": "Dependency", "directed": true },
+    "triggers": { "category": "Dependency", "directed": true },
+    "blocks": { "category": "Constraint", "directed": true },
+    "informs": { "category": "Reference", "directed": false }
+  }
+}

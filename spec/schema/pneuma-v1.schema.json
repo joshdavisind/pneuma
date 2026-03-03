@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pneuma.dev/schema/v1/pneuma-v1.schema.json",
+  "title": "Pneuma v1 — Timeline Diagram Standard",
+  "description": "Schema for Pneuma timeline models. Formalizes timeline events, layers, relationships, and views into a portable JSON format.",
+  "type": "object",
+  "required": ["pneuma", "metadata", "layers", "events"],
+  "additionalProperties": false,
+  "properties": {
+    "pneuma": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "description": "Pneuma specification version (MAJOR.MINOR). Must be 1.x for this schema."
+    },
+    "metadata": { "$ref": "#/$defs/ModelMetadata" },
+    "layers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Layer" },
+      "minItems": 1,
+      "description": "Named swimlanes that group events by concern (e.g., Discovery, Engineering, Marketing)"
+    },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Event" },
+      "minItems": 1,
+      "description": "All events in the model — milestones, deadlines, spans, and tasks"
+    },
+    "relationships": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Relationship" },
+      "description": "Optional dependency and reference edges between events"
+    },
+    "views": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/View" },
+      "description": "Optional named views — each selects a subset of layers and an optional date window"
+    }
+  },
+
+  "$defs": {
+
+    "ModelMetadata": {
+      "type": "object",
+      "required": ["title"],
+      "additionalProperties": true,
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "created": { "type": "string", "format": "date" },
+        "authors": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+
+    "Layer": {
+      "type": "object",
+      "required": ["id", "label", "color"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+          "description": "Unique identifier for the layer"
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "color": {
+          "type": "string",
+          "description": "Hex color (#rrggbb) or CSS named color for the layer's visual identity"
+        },
+        "visibility": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ViewMode" },
+          "description": "Which view modes show this layer. Default: all modes (author, team, present)."
+        }
+      }
+    },
+
+    "Event": {
+      "type": "object",
+      "required": ["id", "label", "type", "layerId", "startDate"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$",
+          "description": "Unique identifier. Alphanumeric with hyphens, underscores, dots."
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "type": { "$ref": "#/$defs/EventType" },
+        "layerId": {
+          "type": "string",
+          "description": "ID of the layer this event belongs to"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO 8601 date (YYYY-MM-DD)"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO 8601 date. Required for span and task types. Must not be present for milestone or deadline."
+        },
+        "impact": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Relative importance score 1–10. Default: 5."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Free-form notes or description for this event"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Arbitrary extension metadata — preserved by validators, displayed by renderers"
+        }
+      }
+    },
+
+    "Relationship": {
+      "type": "object",
+      "required": ["id", "type", "source", "target"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$"
+        },
+        "type": { "$ref": "#/$defs/RelationshipType" },
+        "source": {
+          "type": "string",
+          "description": "Source event ID"
+        },
+        "target": {
+          "type": "string",
+          "description": "Target event ID"
+        },
+        "label": {
+          "type": "string",
+          "description": "Optional label for the relationship edge"
+        }
+      }
+    },
+
+    "View": {
+      "type": "object",
+      "required": ["id", "label", "mode"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_.-]*$"
+        },
+        "label": { "type": "string", "minLength": 1 },
+        "mode": { "$ref": "#/$defs/ViewMode" },
+        "layers": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Layer IDs to include in this view. Default: all layers."
+        },
+        "dateRange": {
+          "$ref": "#/$defs/DateRange",
+          "description": "Optional date window to focus the view"
+        }
+      }
+    },
+
+    "DateRange": {
+      "type": "object",
+      "required": ["start", "end"],
+      "additionalProperties": false,
+      "properties": {
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" }
+      }
+    },
+
+    "EventType": {
+      "type": "string",
+      "enum": ["milestone", "deadline", "span", "task"],
+      "description": "milestone/deadline: point events (startDate only). span/task: ranged events (startDate + endDate required)."
+    },
+
+    "RelationshipType": {
+      "type": "string",
+      "enum": ["depends_on", "triggers", "blocks", "informs"],
+      "description": "Semantic type of the dependency or reference between two events."
+    },
+
+    "ViewMode": {
+      "type": "string",
+      "enum": ["author", "team", "present"],
+      "description": "author: full working view with all detail. team: collaborative in-progress view. present: clean stakeholder-ready view."
+    },
+
+    "LayoutMode": {
+      "type": "string",
+      "enum": ["lanes", "overlay", "timeline", "vertical"],
+      "description": "Informative renderer hint. lanes: horizontal swimlanes. overlay: events stacked on a shared timeline. timeline: linear horizontal Gantt-style. vertical: top-to-bottom flow."
+    }
+
+  }
+}

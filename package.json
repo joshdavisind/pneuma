@@ -1,0 +1,20 @@
+{
+  "name": "pneuma",
+  "version": "1.0.0",
+  "description": "Pneuma — Timeline Diagram Standard",
+  "type": "module",
+  "scripts": {
+    "test": "node spec/schema/validate.mjs examples/product-roadmap.json",
+    "validate": "node spec/schema/validate.mjs",
+    "count": "node spec/schema/count-types.mjs"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshdavisind/pneuma.git"
+  }
+}
